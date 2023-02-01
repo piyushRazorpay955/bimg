@@ -10,7 +10,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"runtime"
 )
 
 var (
@@ -21,11 +20,12 @@ var (
 // resizer is used to transform a given image as byte buffer
 // with the passed options.
 func resizer(buf []byte, o Options) ([]byte, error) {
-	runtime.LockOSThread()
-	defer runtime.UnlockOSThread()
+	//runtime.LockOSThread()
+	//defer runtime.UnlockOSThread()
 	defer C.vips_thread_shutdown()
 
 	image, imageType, err := loadImage(buf)
+	defer C.g_object_unref(C.gpointer(image))
 	if err != nil {
 		return nil, err
 	}
